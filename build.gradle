@@ -1,0 +1,102 @@
+plugins {
+    id 'java'
+    id 'scala'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'com.lucendar'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileScala.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala-library:2.13.12'
+    implementation group: 'com.typesafe.scala-logging', name: 'scala-logging_2.13', version: '3.9.5'
+    implementation group: 'com.typesafe.akka', name: 'akka-actor_2.13', version: '2.6.20'
+
+    implementation 'org.springframework.security:spring-security-core:6.0.8'
+    implementation 'org.springframework.data:spring-data-redis:3.1.2'
+    implementation 'org.springframework:spring-web:6.1.4'
+    implementation 'io.lettuce:lettuce-core:6.2.5.RELEASE' // for redis
+    implementation 'org.springframework:spring-jdbc:6.1.4'
+    implementation 'org.checkerframework:checker-qual:3.36.0'
+    implementation 'io.prometheus:prometheus-metrics-core:1.1.0'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.5'
+
+    implementation('com.lucendar:lucendar-common:2.2.0-SNAPSHOT')
+    implementation('com.lucendar:strm-sdk:4.0.0-SNAPSHOT')
+    implementation('com.lucendar:db-common:2.1.0-SNAPSHOT')
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'gnss-common'
+                packaging = 'jar'
+                // optionally artifactId can be defined here
+                description = 'GNSS Platform common library.'
+                url = 'https://github.com/kwankin-yau/gnss-common'
+
+                scm {
+                    connection = 'https://github.com/kwankin-yau/gnss-common.git'
+                    developerConnection = 'https://github.com/kwankin-yau/gnss-common.git'
+                    url = 'https://github.com/kwankin-yau/gnss-common'
+                }
+
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'http://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'kky'
+                        name = 'kwankin-yau'
+                        email = 'alphax@vip.163.com'
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+signing {
+    sign publishing.publications.maven
+}
+
