@@ -49,7 +49,7 @@ public class DefaultTermCmdDao extends AbstractJdbcDao implements TermCmdDao {
             binder.setString(termCmd.getPlateNo());
 
             binder.setIntObject(termCmd.getPlateColor());
-            binder.setOffsetDateTime(termCmd.getReqTm());
+            binder.setBeijingConvOdt(termCmd.getReqTm());
             binder.setNull(Types.TIMESTAMP_WITH_TIMEZONE);
             binder.setNull(Types.TIMESTAMP_WITH_TIMEZONE);
             binder.setNull(Types.TIMESTAMP_WITH_TIMEZONE);
@@ -85,7 +85,7 @@ public class DefaultTermCmdDao extends AbstractJdbcDao implements TermCmdDao {
         var r = update(sql, setter -> {
             setter.setInt(TermCmd.CMD_STATUS__SENT);
             setter.setIntObject(termCmd.getMsgSn());
-            setter.setOffsetDateTime(termCmd.getSentTm());
+            setter.setBeijingConvOdt(termCmd.getSentTm());
             setter.setString(termCmd.getId());
         });
 
@@ -99,7 +99,7 @@ public class DefaultTermCmdDao extends AbstractJdbcDao implements TermCmdDao {
 
             update(sql, setter -> {
                 setter.setIntObject(termCmd.getMsgSn());
-                setter.setOffsetDateTime(termCmd.getSentTm());
+                setter.setBeijingConvOdt(termCmd.getSentTm());
                 setter.setString(termCmd.getId());
             });
         }
@@ -128,8 +128,8 @@ public class DefaultTermCmdDao extends AbstractJdbcDao implements TermCmdDao {
 
         update(sql, setter -> {
             setter.setInt(TermCmd.CMD_STATUS__SENT);
-            setter.setOffsetDateTime(termCmd.getSentTm());
-            setter.setOffsetDateTime(termCmd.getEndTm());
+            setter.setBeijingConvOdt(termCmd.getSentTm());
+            setter.setBeijingConvOdt(termCmd.getEndTm());
             setter.setIntObject(termCmd.getAckCode());
             setter.setString(termCmd.ackParamsJson());
             setter.setString(termCmd.getId());
@@ -152,7 +152,7 @@ public class DefaultTermCmdDao extends AbstractJdbcDao implements TermCmdDao {
                 """;
         update(sql, setter -> {
             setter.setInt(termCmd.getStatus());
-            setter.setOffsetDateTime(termCmd.getEndTm());
+            setter.setBeijingConvOdt(termCmd.getEndTm());
             setter.setString(termCmd.getId());
         });
     }

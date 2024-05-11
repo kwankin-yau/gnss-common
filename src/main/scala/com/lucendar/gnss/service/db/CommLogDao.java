@@ -22,6 +22,7 @@ public interface CommLogDao {
      * @param startTs 开始时间
      * @param appId   AppId
      * @param simNo   终端识别号
+     * @param retData 是否返回 `data` 属性。为 false 时，不返回 `data` 而返回 `dataSz`
      * @param limit   返回的最大记录数
      * @param offset  返回结果的偏移量
      * @return
@@ -31,6 +32,7 @@ public interface CommLogDao {
             @NonNull long startTs,
             @NonNull String appId,
             @NonNull String simNo,
+            boolean retData,
             int limit,
             int offset);
 

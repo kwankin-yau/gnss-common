@@ -8,6 +8,8 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -49,17 +51,18 @@ public class LocalMemDb implements MemDb {
     }
 
     @Override
-    public void set(String keyPrefix, String key, String value, int ttl) {
+    public void set(@NonNull String keyPrefix, @NonNull String key, @NonNull String value, int ttl) {
         internalSet(keyPrefix, key, value, TimeUnit.SECONDS.toNanos(ttl));
     }
 
     @Override
-    public void set(String keyPrefix, String key, String value) {
+    public void set(@NonNull String keyPrefix, @NonNull String key, @NonNull String value) {
         internalSet(keyPrefix, key, value, Long.MAX_VALUE);
     }
 
     @Override
-    public String get(String keyPrefix, String key) {
+    @Nullable
+    public String get(@NonNull String keyPrefix, @NonNull String key) {
         var e = cache.getIfPresent(keyPrefix + key);
         if (e != null)
             return e.value;
@@ -68,7 +71,7 @@ public class LocalMemDb implements MemDb {
     }
 
     @Override
-    public void del(String keyPrefix, String key) {
+    public void del(@NonNull String keyPrefix, @NonNull String key) {
         cache.invalidate(keyPrefix + key);
     }
 }

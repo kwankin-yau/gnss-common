@@ -6,7 +6,7 @@ package com.lucendar.gnss.service.db
 
 import com.lucendar.common.db.jdbc.{DbHelper, ResultSetAccessor, ResultSetMapper, StatementBinder}
 import com.lucendar.common.db.types.SqlDialect
-import com.lucendar.gnss.service.db.DefaultCommLogDao.MAPPER
+import com.lucendar.gnss.service.db.DefaultCommLogDao.{DATA_SZ_MAPPER, MAPPER}
 import com.lucendar.strm.common.types.CommLog
 import org.checkerframework.checker.nullness.qual.NonNull
 
@@ -18,31 +18,44 @@ class DefaultCommLogDao(@NonNull ds: DataSource, @NonNull sqlDialect: SqlDialect
 
   override def qryGatewayCommLog(
                                   startTs: Long,
-                                  appId: String,
-                                  simNo: String,
-                                  limit: Int,
-                                  offset: Int
+                                  appId  : String,
+                                  simNo  : String,
+                                  retData: Boolean,
+                                  limit  : Int,
+                                  offset : Int
                                 ): util.List[CommLog] = {
-    var sql =
-      """
+
+
+    val (sql, mapper) =
+      if (retData)
+        (
+          """
        SELECT f_id, f_ts, f_app_id, f_sim_no, f_evt_typ, f_desc, f_data
        FROM t_comm_log
        WHERE f_ts >= ? AND f_app_id = ? AND f_sim_no = ?
        LIMIT %d OFFSET %d
-       """
+       """.formatted(limit, offset),
+          MAPPER
+        )
+      else (
+        """
+       SELECT f_id, f_ts, f_app_id, f_sim_no, f_evt_typ, f_desc, length(f_data) AS f_data_sz
+       FROM t_comm_log
+       WHERE f_ts >= ? AND f_app_id = ? AND f_sim_no = ?
+       LIMIT %d OFFSET %d
+       """.formatted(limit, offset),
+        DATA_SZ_MAPPER
+      )
 
-    sql = String.format(sql, limit, offset)
 
     qryList(
       sql, (setter: StatementBinder) => {
-        setter.setOffsetDateTime(startTs)
+        setter.setBeijingConvOdt(startTs)
         setter.setString(appIdDef(appId))
         setter.setString(simNo)
-
-      }, MAPPER
+      }, mapper
     )
   }
-
 
 
   override def saveCommLogs(commLogs: util.List[CommLog]): Unit = {
@@ -85,4 +98,15 @@ object DefaultCommLogDao {
     r
   }
 
+  private val DATA_SZ_MAPPER: ResultSetMapper[CommLog] = (acc: ResultSetAccessor) => {
+    val r = new CommLog
+    r.setId(acc.str())
+    r.setTs(acc.epochMillisLong())
+    r.setAppId(acc.str())
+    r.setSimNo(acc.str())
+    r.setEvtTyp(acc.str())
+    r.setDesc(acc.str())
+    r.setDataSz(acc.int32())
+    r
+  }
 }

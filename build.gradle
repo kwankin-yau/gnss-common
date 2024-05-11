@@ -8,9 +8,8 @@ plugins {
 group = 'com.lucendar'
 version = '1.0.0-SNAPSHOT'
 
-java {
-    sourceCompatibility = '17'
-}
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 compileJava.options.encoding = 'UTF-8'
 compileScala.options.encoding = 'UTF-8'
@@ -32,6 +31,8 @@ dependencies {
     implementation 'org.checkerframework:checker-qual:3.36.0'
     implementation 'io.prometheus:prometheus-metrics-core:1.1.0'
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.5'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'de.bytefish:pgbulkinsert:8.1.2'
 
     implementation('com.lucendar:lucendar-common:2.2.0-SNAPSHOT')
     implementation('com.lucendar:strm-sdk:4.0.0-SNAPSHOT')

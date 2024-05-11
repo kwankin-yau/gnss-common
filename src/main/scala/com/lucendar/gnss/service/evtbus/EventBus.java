@@ -6,6 +6,7 @@
 package com.lucendar.gnss.service.evtbus;
 
 import akka.actor.ActorRef;
+import com.lucendar.gnss.sdk.almatt.FetchAlmAttReq;
 import com.lucendar.gnss.sdk.gateway.OnlineOfflineNotif;
 import info.gratour.jt808common.spi.model.CmdAsyncCompletedMsg;
 import info.gratour.jt808common.spi.model.Event;
@@ -92,5 +93,8 @@ public class EventBus {
 
     public static final EventHub<CmdAsyncCompletedMsg> CmdAsyncCompletedEventHub =
             new EventHub<>(CmdAsyncCompletedMsg.class);
+
+    public static final EventHub<FetchAlmAttReq> FetchAlmAttEventHub =
+            new EventHub<>(FetchAlmAttReq.class);
 
 }

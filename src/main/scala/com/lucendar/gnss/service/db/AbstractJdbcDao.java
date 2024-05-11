@@ -5,6 +5,7 @@
 
 package com.lucendar.gnss.service.db;
 
+import com.lucendar.common.db.jdbc.CallStmtProcessor;
 import com.lucendar.common.db.jdbc.DbHelper;
 import com.lucendar.common.db.jdbc.ResultSetMapper;
 import com.lucendar.common.db.jdbc.StatementSetter;
@@ -122,6 +123,11 @@ public abstract class AbstractJdbcDao {
             var r = DbHelper.updateExWithGenKey(sql, setter, conn);
             return r.getGeneratedKey();
         });
+    }
+
+    protected <T> void call(@NonNull String sql, @NonNull CallStmtProcessor<T> callback) {
+        LOGGER.debug("call: {}", sql);
+        dbAction(conn -> DbHelper.callEx2(sql, callback, conn));
     }
 
 
