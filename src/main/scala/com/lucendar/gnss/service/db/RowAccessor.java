@@ -19,6 +19,14 @@ public class RowAccessor {
         this.row = row;
     }
 
+    public SimpleRow getRow() {
+        return row;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
     public void boo(Boolean value) {
         row.setBoolean(index, value);
         index++;
@@ -41,6 +49,21 @@ public class RowAccessor {
         row.setInteger(index, value);
         index++;
     }
+
+    public void big(Long value) {
+        row.setLong(index, value);
+        index++;
+    }
+
+    public void big(String value) {
+        if (value != null)
+            big(Long.parseLong(value));
+        else {
+            row.setLong(index, null);
+            index++;
+        }
+    }
+
 
     public void fld(Float value) {
         row.setFloat(index, value);

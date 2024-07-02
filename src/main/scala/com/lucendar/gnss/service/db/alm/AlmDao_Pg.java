@@ -15,6 +15,7 @@ import de.bytefish.pgbulkinsert.util.PostgreSqlUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.postgresql.PGConnection;
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,6 +219,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
                 binder.setIntObject(alm.getProcSt());
 
                 binder.setIntObject(alm.getProcMeth());
+                binder.setBeijingConvOdt(alm.getProcTm());
                 binder.setString(alm.getOprName());
                 binder.setString(alm.getOprCorpName());
                 binder.setString(alm.getSupervId());
@@ -244,7 +246,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
 
     @Override
     public void closeAlm(@NonNull CloseAlmReq req) {
-        String CALL = "{ ? = call p_close_alm(?, ?, ?, ?, ?::real,   ?::real, ?, ?, ?, ?::d_id, ?) }";
+        String CALL = "{ ? = call p_close_alm(?, ?, ?, ?, ?::real,   ?::real, ?, ?, ?, ?::d_str_id, ?) }";
 
         call(CALL, (conn, bind) -> {
             bind.registerOutParameter(Types.BOOLEAN);
@@ -281,6 +283,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
             "f_src",
             "f_lvl",
             "f_actv",
+
             "f_tm1",
             "f_recv_tm1",
             "f_lng1",
@@ -290,6 +293,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
             "f_alt1",
             "f_dir1",
             "f_addt1",
+
             "f_tm0",
             "f_recv_tm0",
             "f_lng0",
@@ -299,6 +303,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
             "f_alt0",
             "f_dir0",
             "f_addt0",
+
             "f_dur",
             "f_att_cnt",
             "f_drv_name",
@@ -322,6 +327,8 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
         if (count == 0)
             return;
 
+        LOGGER.debug("column count: {}", ALM_COLUMNS.length);
+
         try (Connection conn = ds.getConnection()) {
             PGConnection pg = PostgreSqlUtils.getPGConnection(conn);
             try (SimpleRowWriter writer = new SimpleRowWriter(AlmTable, pg)) {
@@ -339,7 +346,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
                         acc.str(alm.getTyp()); //    "f_typ",
                         acc.str(alm.getSubTyp()); //    "f_sub_typ",
                         acc.int16(alm.getSrc()); //    "f_src",
-                        acc.int32(alm.getLvl()); //    "f_lvl",
+                        acc.int16(alm.getLvl()); //    "f_lvl",
                         acc.boo(alm.isActv()); //    "f_actv",
 
                         acc.tsz(alm.getTm1()); //    "f_tm1",
@@ -348,8 +355,8 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
                         acc.dbl(alm.getLat1()); //    "f_lat1",
                         acc.fld(alm.getSpd1()); //    "f_spd1",
                         acc.fld(alm.getRecSpd1()); //    "f_rec_spd1",
-                        acc.int32(alm.getAlt1()); //    "f_alt1",
-                        acc.int32(alm.getDir1()); //    "f_dir1",
+                        acc.int16(alm.getAlt1()); //    "f_alt1",
+                        acc.int16(alm.getDir1()); //    "f_dir1",
                         acc.str(alm.addt1ToJson()); //    "f_addt1",
 
                         acc.tsz(alm.getTm0()); //    "f_tm0",
@@ -358,29 +365,35 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
                         acc.dbl(alm.getLat0()); //    "f_lat0",
                         acc.fld(alm.getSpd0()); //    "f_spd0",
                         acc.fld(alm.getRecSpd0()); //    "f_rec_spd0",
-                        acc.int32(alm.getAlt0()); //    "f_alt0",
-                        acc.int32(alm.getDir0()); //    "f_dir0",
+                        acc.int16(alm.getAlt0()); //    "f_alt0",
+                        acc.int16(alm.getDir0()); //    "f_dir0",
                         acc.str(alm.addt0ToJson()); //    "f_addt0",
 
-                        acc.int32(alm.getDur()); //                                "f_dur",
-                        acc.int32(alm.getAttCnt()); //                                "f_att_cnt",
-                        acc.str(alm.getDrvName()); //                                "f_drv_name",
-                        acc.str(alm.getDrvNo()); //                                "f_drv_no",
-                        acc.str(alm.getPlatRgnId()); //                                "f_plat_rgn_id",
-                        acc.int16(alm.getProcSt()); //                                "f_proc_st",
-                        acc.int32(alm.getProcMeth()); //                                "f_proc_meth",
-                        acc.tsz(alm.getProcTm()); //                                "f_proc_tm",
-                        acc.str(alm.getOprName()); //                                "f_opr_name",
-                        acc.str(alm.getOprCorpName()); //                                "f_opr_corp_name",
-                        acc.str(alm.getSupervId()); //                                "f_superv_id",
-                        acc.tsz(alm.getSupervTm()); //                                "f_superv_tm",
-                        acc.tsz(alm.getSupervDeadline()); //                                "f_superv_deadline",
-                        acc.boo(alm.getSupervReplyNeeded()); //                                "f_superv_reply_needed"
+                        acc.int32(alm.getDur()); //     "f_dur",
+                        acc.int16(alm.getAttCnt()); //  "f_att_cnt",
+                        acc.str(alm.getDrvName()); //   "f_drv_name",
+                        acc.str(alm.getDrvNo()); //     "f_drv_no",
+                        acc.str(alm.getPlatRgnId()); // "f_plat_rgn_id",
+                        acc.int16(alm.getProcSt()); //  "f_proc_st",
+                        acc.int16(alm.getProcMeth()); //"f_proc_meth",
+                        acc.tsz(alm.getProcTm()); //    "f_proc_tm",
+                        acc.str(alm.getOprName()); //   "f_opr_name",
+                        acc.str(alm.getOprCorpName()); //"f_opr_corp_name",
+                        acc.str(alm.getSupervId()); //   "f_superv_id",
+                        acc.tsz(alm.getSupervTm()); //   "f_superv_tm",
+                        acc.tsz(alm.getSupervDeadline()); //  "f_superv_deadline",
+                        acc.boo(alm.getSupervReplyNeeded()); // "f_superv_reply_needed"
+
+                        LOGGER.debug("write {} values", acc.getIndex());
                     });
                 }
             }
         } catch (Throwable t) {
             LOGGER.error("Error occurred when bulk save alarm to database", t);
+            if (t.getCause() instanceof PSQLException psqlex) {
+                LOGGER.error("PGSQL error: {}", psqlex.getSQLState());
+            }
+
             if (t instanceof RuntimeException) {
                 throw (RuntimeException) t;
             } else

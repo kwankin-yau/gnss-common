@@ -19,6 +19,9 @@ class PartitionMaintainJob(val jdbcCtx: JdbcContext, val sqlDialect: SqlDialect)
     }
   }
 
+  /**
+   * Do not throws exception
+   */
   def exec(): Unit = {
     safeExec("SELECT p_create_partitions()")
     safeExec("SELECT p_delete_old_parts()")
