@@ -13,7 +13,7 @@ public interface TermCmdDao {
 
     /**
      *
-     * @param termCmd The termCmd to be save to db. Note that the `id` of termCmd must be set before call this method.
+     * @param termCmd The termCmd to be saved to db. Note that the `id` of termCmd must be set before call this method.
      * @return given `termCmd` object with some properties set(for example, `reqTm`).
      */
     TermCmd createTermCmd(TermCmd termCmd);
