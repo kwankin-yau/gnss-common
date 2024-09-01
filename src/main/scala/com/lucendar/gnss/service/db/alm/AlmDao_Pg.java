@@ -327,7 +327,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
         if (count == 0)
             return;
 
-        LOGGER.debug("column count: {}", ALM_COLUMNS.length);
+//        LOGGER.debug("column count: {}", ALM_COLUMNS.length);
 
         try (Connection conn = ds.getConnection()) {
             PGConnection pg = PostgreSqlUtils.getPGConnection(conn);
@@ -384,7 +384,7 @@ public class AlmDao_Pg extends AbstractJdbcDao implements AlmDao {
                         acc.tsz(alm.getSupervDeadline()); //  "f_superv_deadline",
                         acc.boo(alm.getSupervReplyNeeded()); // "f_superv_reply_needed"
 
-                        LOGGER.debug("write {} values", acc.getIndex());
+//                        LOGGER.debug("write {} values", acc.getIndex());
                     });
                 }
             }
