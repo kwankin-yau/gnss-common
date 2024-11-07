@@ -12,10 +12,15 @@ import info.gratour.jt808common.spi.model.CmdAsyncCompletedMsg;
 import info.gratour.jt808common.spi.model.Event;
 import info.gratour.jt808common.spi.model.TermCmd;
 import info.gratour.jt808common.spi.model.TermCmdStateChanged;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class EventBus {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger("gnss.eventBus");
 
     public static final AtomicReference<ActorRef> EventBusRef = new AtomicReference<>();
 
@@ -54,9 +59,15 @@ public class EventBus {
 
     public static class EventHub<E> {
         public final String EventType;
+        private final boolean printCallStack;
+
+        public EventHub(Class<E> clzz, boolean printCallStack) {
+            EventType = clzz.getSimpleName();
+            this.printCallStack = printCallStack;
+        }
 
         public EventHub(Class<E> clzz) {
-            EventType = clzz.getSimpleName();
+            this(clzz, false);
         }
 
         public RegisterListener<E> register(EventListener<E> listener) {
@@ -77,6 +88,10 @@ public class EventBus {
         }
 
         public void publish(E e) {
+            if (printCallStack) {
+                Throwable t = new Throwable("Callstack print");
+                LOGGER.debug("Publish message", t);
+            }
             send(new PublishEvent<>(EventType, e));
         }
     }

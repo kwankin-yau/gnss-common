@@ -38,7 +38,7 @@ dependencies {
     implementation 'de.bytefish:pgbulkinsert:8.1.2'
 
     implementation('com.lucendar:lucendar-common:2.2.0-SNAPSHOT')
-    implementation('com.lucendar:strm-sdk:4.0.0-SNAPSHOT')
+    implementation('com.lucendar:strm-sdk:4.0.1')
     implementation('com.lucendar:db-common:2.1.0-SNAPSHOT')
 
     testImplementation platform('org.junit:junit-bom:5.9.1')

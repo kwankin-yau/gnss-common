@@ -65,12 +65,12 @@ public abstract class AbstractTermCommander implements TermCommander {
         if (changed) {
             termCmdDao.updateTermCmdStatus(termCmd);
 
-            var notif = new TermCmdStateChanged();
-            notif.setRandomUuid();
-            notif.setPub(servInstanceId);
-            notif.assign(termCmd, System.currentTimeMillis());
-            LOGGER.debug("Publish {}", notif);
-            EventBus.CmdStateChangedEventHub.publish(notif);
+//            var notif = new TermCmdStateChanged();
+//            notif.setRandomUuid();
+//            notif.setPub(servInstanceId);
+//            notif.assign(termCmd, System.currentTimeMillis());
+//            LOGGER.debug("Publish {}", notif);
+//            EventBus.CmdStateChangedEventHub.publish(notif);
         }
     }
 
