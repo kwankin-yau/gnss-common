@@ -37,9 +37,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'de.bytefish:pgbulkinsert:8.1.2'
 
-    implementation('com.lucendar:lucendar-common:2.2.0-SNAPSHOT')
+    implementation('com.lucendar:lucendar-common:2.2.0')
     implementation('com.lucendar:strm-sdk:4.0.1')
-    implementation('com.lucendar:db-common:2.1.0-SNAPSHOT')
+    implementation('com.lucendar:db-common:2.1.0')
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
